@@ -1,0 +1,77 @@
+package com.base.service.implement;
+
+import com.base.dto.PaginatedResponse;
+import com.base.dto.PaginationRequest;
+import com.base.entity.User;
+import com.base.entity.UserCourses;
+import com.base.repositories.UserCoursesRepository;
+import com.base.service.i.IUserCoursesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class UserCoursesService implements IUserCoursesService {
+    @Autowired
+    UserCoursesRepository userCoursesRepository;
+
+    @Override
+    public PaginatedResponse<UserCourses> getAll(PaginationRequest paginationRequest) {
+        Pageable pageable =
+                PageRequest.of(paginationRequest.getPage(), paginationRequest.getSize());
+        Page<UserCourses> userCoursesPage = userCoursesRepository.findAll(pageable);
+
+        // Trả về danh sách các UserCourses từ Page
+        return new PaginatedResponse<>(userCoursesPage.getContent(), userCoursesPage.getTotalElements());
+    }
+
+    @Override
+    public List<UserCourses> getCoursesByIdUser(int userId, PaginationRequest paginationRequest) {
+        List<UserCourses> list = userCoursesRepository.findByUserId(userId);
+        return list;
+    }
+
+    @Override
+    public Boolean deleteUserCourseByUserId(int userId) {
+        List<UserCourses> existingUserCourses =
+                userCoursesRepository.findByUserId(userId);
+        if (existingUserCourses.size() > 0) {
+            userCoursesRepository.deleteByUserId(userId);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public UserCourses getCoursesById(int id) {
+        return userCoursesRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public UserCourses createUserCourse(UserCourses userCourses) {
+        return userCoursesRepository.save(userCourses);
+    }
+
+    @Override
+    public UserCourses updateUserCourse(int id, UserCourses userCoursesDetails) {
+        return null;
+
+    }
+
+    @Override
+    public Boolean deleteUserCourseById(int id) {
+        if (userCoursesRepository.existsById(id)) {
+            userCoursesRepository.deleteById(id);
+            return true; // Xóa thành công
+        } else {
+            return false; // Không
+            // tìm thay courses
+        }
+    }
+
+
+}

@@ -1,0 +1,9 @@
+spring.application.name=base
+server.port=8080
+spring.datasource.url=jdbc:postgresql://localhost:5432/base
+spring.datasource.username=postgres
+spring.datasource.password=admin123
+spring.datasource.driver-class-name=org.postgresql.Driver
+#spring.security.user.name=admin
+#spring.security.user.password=123
+#spring.security.user.roles=USER

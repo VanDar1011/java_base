@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/base
+    username: postgres
+    password: admin123
+    generate-unique-name: false
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+server:
+  port: 8080
