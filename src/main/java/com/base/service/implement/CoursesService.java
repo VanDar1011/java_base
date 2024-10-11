@@ -3,8 +3,6 @@ package com.base.service.implement;
 import com.base.dto.PaginatedResponse;
 import com.base.dto.PaginationRequest;
 import com.base.entity.Course;
-import com.base.entity.User;
-import com.base.entity.UserCourses;
 import com.base.repositories.CoursesRepository;
 import com.base.service.i.ICoursesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CoursesService implements ICoursesService {
@@ -56,5 +56,15 @@ public class CoursesService implements ICoursesService {
             return false; // Không
             // tìm thay courses
         }
+    }
+
+    @Override
+    public List<Course> getCourseByName(String courseName) {
+        return coursesRepository.findByName(courseName);
+    }
+
+    @Override
+    public Course getByExactlyName(String courseName) {
+       return coursesRepository.findByExactlyName(courseName);
     }
 }

@@ -1,0 +1,17 @@
+package com.base.model;
+
+public enum ResponseStatus {
+    OK("ok"),
+    FAIL("fail");
+
+    private final String status;
+
+    // Constructor
+    ResponseStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+}

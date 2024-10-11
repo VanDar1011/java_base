@@ -27,6 +27,11 @@ public class UserCourses implements Serializable {
         this.course = course;
     }
 
+    public UserCourses(User user, Course course) {
+        this.user = user;
+        this.course = course;
+    }
+
     public int getId() {
         return id;
     }

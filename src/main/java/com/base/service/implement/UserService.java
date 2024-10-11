@@ -4,7 +4,6 @@ import com.base.dto.PaginatedResponse;
 import com.base.dto.PaginationRequest;
 import com.base.entity.Profile;
 import com.base.entity.User;
-import com.base.entity.UserCourses;
 import com.base.repositories.ProfileRepostitory;
 import com.base.repositories.UserRepository;
 import com.base.service.i.IUserService;
@@ -44,6 +43,11 @@ public class UserService implements IUserService {
     @Override
     public User getUserById(int id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<User> getUserByName(String name) {
+        return userRepository.findByName(name);
     }
 
     @Override

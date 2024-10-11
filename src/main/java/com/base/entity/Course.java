@@ -3,8 +3,6 @@ package com.base.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity(name="courses")
 public class Course implements Serializable {

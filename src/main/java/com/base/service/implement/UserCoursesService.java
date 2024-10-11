@@ -2,9 +2,12 @@ package com.base.service.implement;
 
 import com.base.dto.PaginatedResponse;
 import com.base.dto.PaginationRequest;
+import com.base.entity.Course;
 import com.base.entity.User;
 import com.base.entity.UserCourses;
+import com.base.repositories.CoursesRepository;
 import com.base.repositories.UserCoursesRepository;
+import com.base.repositories.UserRepository;
 import com.base.service.i.IUserCoursesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +21,11 @@ import java.util.List;
 public class UserCoursesService implements IUserCoursesService {
     @Autowired
     UserCoursesRepository userCoursesRepository;
+
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    private CoursesRepository coursesRepository;
 
     @Override
     public PaginatedResponse<UserCourses> getAll(PaginationRequest paginationRequest) {
@@ -52,7 +60,13 @@ public class UserCoursesService implements IUserCoursesService {
     }
 
     @Override
-    public UserCourses createUserCourse(UserCourses userCourses) {
+    public UserCourses createUserCourse(int userId, int courseId) {
+        User existingUser = userRepository.findById(userId).orElse(null);
+        Course existingCourse =
+                coursesRepository.findById(courseId).orElse(null);
+        UserCourses userCourses =
+                new UserCourses(existingUser,
+                        existingCourse);
         return userCoursesRepository.save(userCourses);
     }
 
