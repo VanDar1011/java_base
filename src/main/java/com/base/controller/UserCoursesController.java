@@ -68,26 +68,21 @@ public class UserCoursesController {
         User user = userService.getUserById(userId);
         // check if user not found
         if (user == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "User " +
-//                    "not found", null));
             throw new NotFoundException("User not found");
         }
         Course course =
                 coursesService.getCourseById(courseId);
-        // check if course not found
+        // check if courses not found
         if (course == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Course not found", null));
             throw new NotFoundException("Course not found");
         }
-        // check if course assgined
+        // check if courses assgined
         // to user
         UserCourses userCourses =
                 userCoursesRepository.findByUserIdAndCourseId(userId, courseId);
         if (userCourses != null) {
-            System.out.println(
-                    "Existing " +
-                            "UserCourse " + userCourses.toString());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Course already assgined to User", null));
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Course already assigned to User", null));
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject(ResponseStatus.OK.getStatus(), "CREATE SUCCESS", userCoursesService.createUserCourse(userId, courseId)));
@@ -100,8 +95,6 @@ public class UserCoursesController {
 
         // Kiểm tra nếu không tìm thấy người dùng
         if (updatedUserCourse == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "User not found", null));
             throw new NotFoundException("UserCourse not found");
         }
 

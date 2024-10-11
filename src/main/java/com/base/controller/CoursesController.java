@@ -55,9 +55,8 @@ public class CoursesController {
 
         // Kiểm tra nếu không tìm thấy người dùng
         if (course == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Courses not found", null));
-            throw new NotFoundException("User Not Found");
+
+            throw new NotFoundException("Course Not Found");
         }
 
         // Nếu tìm thấy người dùng, trả về kết quả
@@ -83,7 +82,6 @@ public class CoursesController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteUser(@PathVariable("id") int id) {
-//        try {
         boolean value_user =
                 coursesService.deleteCourse(id);
         if (value_user)
@@ -91,16 +89,6 @@ public class CoursesController {
                     .body(new ResponseObject(ResponseStatus.OK.getStatus(), "Delete Success", null));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("fail",
                 "Course not found", null));
-//        } catch (
-//                DataIntegrityViolationException e) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT)
-//                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
-//                            "Cannot delete course because it is referenced by other entities",
-//                            null));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new ResponseObject("error", "An error occurred", e.getMessage()));
-//        }
     }
 
     @ExceptionHandler(ConflictException.class)
