@@ -3,6 +3,8 @@ package com.base.controller;
 import com.base.dto.PaginationRequest;
 import com.base.entity.Course;
 import com.base.entity.ResponseObject;
+import com.base.exception.ConflictException;
+import com.base.exception.NotFoundException;
 import com.base.model.ResponseStatus;
 import com.base.service.implement.CoursesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,7 @@ public class CoursesController {
     ResponseEntity<ResponseObject> createUser(@RequestBody Course course) {
         Course course1 = coursesService.getByExactlyName(course.getName());
         if (course1 != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
-                    "COURSE ALREADY EXISTS", course1));
+            throw new ConflictException("Course already exists");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject(ResponseStatus.OK.getStatus(),
                 "CREATE " +
@@ -54,8 +55,9 @@ public class CoursesController {
 
         // Kiểm tra nếu không tìm thấy người dùng
         if (course == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Courses not found", null));
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Courses not found", null));
+            throw new NotFoundException("User Not Found");
         }
 
         // Nếu tìm thấy người dùng, trả về kết quả
@@ -81,22 +83,52 @@ public class CoursesController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteUser(@PathVariable("id") int id) {
-        try {
-            boolean value_user =
-                    coursesService.deleteCourse(id);
-            if (value_user)
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseObject(ResponseStatus.OK.getStatus(), "Delete Success", null));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("fail", "Coures not found", null));
-        } catch (
-                DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
-                            "Cannot delete user because it is referenced by other entities", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseObject("error", "An error occurred", e.getMessage()));
-        }
+//        try {
+        boolean value_user =
+                coursesService.deleteCourse(id);
+        if (value_user)
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(ResponseStatus.OK.getStatus(), "Delete Success", null));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("fail",
+                "Course not found", null));
+//        } catch (
+//                DataIntegrityViolationException e) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT)
+//                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
+//                            "Cannot delete course because it is referenced by other entities",
+//                            null));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new ResponseObject("error", "An error occurred", e.getMessage()));
+//        }
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ResponseObject> handleConflictException(ConflictException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
+                ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ResponseObject> handleNotFoundException(NotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
+                         ex.getMessage(), null
+                ));
+
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ResponseObject> handleConflictException(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
+                        "Cannot delete course because it is referenced by other entities", null));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseObject> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseObject("error", "An error occurred", ex.getMessage()));
     }
 
 }

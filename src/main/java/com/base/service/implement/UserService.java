@@ -4,6 +4,7 @@ import com.base.dto.PaginatedResponse;
 import com.base.dto.PaginationRequest;
 import com.base.entity.Profile;
 import com.base.entity.User;
+import com.base.exception.NotFoundException;
 import com.base.repositories.ProfileRepostitory;
 import com.base.repositories.UserRepository;
 import com.base.service.i.IUserService;
@@ -24,7 +25,7 @@ public class UserService implements IUserService {
     ProfileRepostitory profileRepository;
 
     @Override
-    public  PaginatedResponse<User> getAll(PaginationRequest paginationRequest) {
+    public PaginatedResponse<User> getAll(PaginationRequest paginationRequest) {
 //        List<User> list = userRepository.findAll();
 //        return list;
         Pageable pageable =
@@ -42,7 +43,8 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserById(int id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not" +
+                " found"));
     }
 
     @Override
@@ -56,11 +58,11 @@ public class UserService implements IUserService {
                 .orElseThrow(null);
         // Cập nhật thông tin
         if (userDetails.getName() != null) {
-            System.out.println("Vao Name");
+//            System.out.println("Vao Name");
             existingUser.setName(userDetails.getName());
         }
         if (userDetails.getProfile() != null) {
-            System.out.println("Vao Profile");
+//            System.out.println("Vao Profile");
             Profile existingProfile = existingUser.getProfile();
             existingProfile.setAddress(userDetails.getProfile().getAddress());
             profileRepository.save(existingProfile);

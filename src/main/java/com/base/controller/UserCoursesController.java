@@ -5,6 +5,7 @@ import com.base.entity.Course;
 import com.base.entity.ResponseObject;
 import com.base.entity.User;
 import com.base.entity.UserCourses;
+import com.base.exception.NotFoundException;
 import com.base.model.ResponseStatus;
 import com.base.repositories.UserCoursesRepository;
 import com.base.service.implement.CoursesService;
@@ -12,6 +13,7 @@ import com.base.service.implement.UserCoursesService;
 import com.base.service.implement.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +56,7 @@ public class UserCoursesController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> create(@RequestBody Map<String, Integer> request) {
+    public ResponseEntity<ResponseObject> create(@RequestBody Map<String, Integer> request, HttpMethod httpMethod) {
         int userId = request.get(
                 "userId");
         int courseId = request.get(
@@ -66,14 +68,16 @@ public class UserCoursesController {
         User user = userService.getUserById(userId);
         // check if user not found
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "User " +
-                    "not found", null));
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "User " +
+//                    "not found", null));
+            throw new NotFoundException("User not found");
         }
         Course course =
                 coursesService.getCourseById(courseId);
         // check if course not found
         if (course == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Course not found", null));
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Course not found", null));
+            throw new NotFoundException("Course not found");
         }
         // check if course assgined
         // to user
@@ -96,8 +100,9 @@ public class UserCoursesController {
 
         // Kiểm tra nếu không tìm thấy người dùng
         if (updatedUserCourse == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "User not found", null));
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "User not found", null));
+            throw new NotFoundException("UserCourse not found");
         }
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -107,24 +112,30 @@ public class UserCoursesController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteUser(@PathVariable("id") int id) {
-        try {
-            boolean value_user =
-                    userCoursesService.deleteUserCourseById(id);
-            if (value_user)
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ResponseObject(ResponseStatus.OK.getStatus(), "Delete Success",
-                                null));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("fail", "UserCourse not found", null));
-        } catch (
-                DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
-                            "Cannot delete user because it is referenced by other entities",
-                            null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseObject("error", "An error occurred", e.getMessage()));
-        }
+//        try {
+        boolean value_user =
+                userCoursesService.deleteUserCourseById(id);
+        if (!value_user)
+            throw new NotFoundException("UserCourse not found");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseObject(ResponseStatus.OK.getStatus(), "Delete Success",
+                        null));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ResponseObject> handleNotFoundException(NotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseObject(ResponseStatus.FAIL.getStatus(),
+                        ex.getMessage(), null
+                ));
+
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseObject> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseObject("error", "An error occurred", ex.getMessage()));
     }
 
 
