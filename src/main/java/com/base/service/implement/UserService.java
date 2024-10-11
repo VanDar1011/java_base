@@ -8,6 +8,7 @@ import com.base.exception.NotFoundException;
 import com.base.repositories.ProfileRepostitory;
 import com.base.repositories.UserRepository;
 import com.base.service.i.IUserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,18 +17,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UserService implements IUserService {
-    @Autowired
-    UserRepository userRepository;
 
-    @Autowired
-    ProfileRepostitory profileRepository;
+    private final UserRepository userRepository;
+
+
+    private final ProfileRepostitory profileRepository;
 
     @Override
     public PaginatedResponse<User> getAll(PaginationRequest paginationRequest) {
-//        List<User> list = userRepository.findAll();
-//        return list;
         Pageable pageable =
                 PageRequest.of(paginationRequest.getPage(), paginationRequest.getSize());
         Page<User> userPage = userRepository.findAll(pageable);

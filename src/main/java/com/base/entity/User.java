@@ -7,15 +7,17 @@ import java.io.Serializable;
 
 @Entity(name = "users")
 public class User implements Serializable {
-    @Getter
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "name", length = 20, nullable = false)
+    @Column(length = 20, nullable = false)
     private String name;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+//    @Column(length = 20, nullable = false)
+//    private  String userName;
 
     public User() {
     }

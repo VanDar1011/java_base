@@ -3,8 +3,8 @@ package com.base.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-@Entity(name="profile")
-public class Profile  implements Serializable {
+@Entity(name = "profile")
+public class Profile implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

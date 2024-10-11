@@ -1,4 +1,4 @@
-package com.base.model;
+package com.base.utils;
 
 public enum ResponseStatus {
     OK("ok"),

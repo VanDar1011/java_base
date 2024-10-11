@@ -5,6 +5,7 @@ import com.base.dto.PaginationRequest;
 import com.base.entity.Course;
 import com.base.repositories.CoursesRepository;
 import com.base.service.i.ICoursesService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CoursesService implements ICoursesService {
-    @Autowired
-    CoursesRepository coursesRepository;
+
+    private final CoursesRepository coursesRepository;
 
     @Override
     public PaginatedResponse<Course> getAll(PaginationRequest paginationRequest) {
@@ -65,6 +67,6 @@ public class CoursesService implements ICoursesService {
 
     @Override
     public Course getByExactlyName(String courseName) {
-       return coursesRepository.findByExactlyName(courseName);
+        return coursesRepository.findByExactlyName(courseName);
     }
 }

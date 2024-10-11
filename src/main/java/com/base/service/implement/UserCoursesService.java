@@ -9,6 +9,7 @@ import com.base.repositories.CoursesRepository;
 import com.base.repositories.UserCoursesRepository;
 import com.base.repositories.UserRepository;
 import com.base.service.i.IUserCoursesService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,19 +19,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserCoursesService implements IUserCoursesService {
-    @Autowired
-    UserCoursesRepository userCoursesRepository;
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    private CoursesRepository coursesRepository;
+    private final UserCoursesRepository userCoursesRepository;
+
+    private final UserRepository userRepository;
+
+    private final CoursesRepository coursesRepository;
 
     @Override
     public PaginatedResponse<UserCourses> getAll(PaginationRequest paginationRequest) {
-        Pageable pageable =
-                PageRequest.of(paginationRequest.getPage(), paginationRequest.getSize());
+        Pageable pageable = PageRequest.of(paginationRequest.getPage(), paginationRequest.getSize());
         Page<UserCourses> userCoursesPage = userCoursesRepository.findAll(pageable);
 
         // Trả về danh sách các UserCourses từ Page
@@ -45,9 +45,8 @@ public class UserCoursesService implements IUserCoursesService {
 
     @Override
     public Boolean deleteUserCourseByUserId(int userId) {
-        List<UserCourses> existingUserCourses =
-                userCoursesRepository.findByUserId(userId);
-        if (existingUserCourses.size() > 0) {
+        List<UserCourses> existingUserCourses = userCoursesRepository.findByUserId(userId);
+        if (existingUserCourses.isEmpty()) {
             userCoursesRepository.deleteByUserId(userId);
             return true;
         }
@@ -62,11 +61,8 @@ public class UserCoursesService implements IUserCoursesService {
     @Override
     public UserCourses createUserCourse(int userId, int courseId) {
         User existingUser = userRepository.findById(userId).orElse(null);
-        Course existingCourse =
-                coursesRepository.findById(courseId).orElse(null);
-        UserCourses userCourses =
-                new UserCourses(existingUser,
-                        existingCourse);
+        Course existingCourse = coursesRepository.findById(courseId).orElse(null);
+        UserCourses userCourses = new UserCourses(existingUser, existingCourse);
         return userCoursesRepository.save(userCourses);
     }
 
@@ -86,6 +82,4 @@ public class UserCoursesService implements IUserCoursesService {
             // tìm thay courses
         }
     }
-
-
 }
