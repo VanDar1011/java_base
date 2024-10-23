@@ -98,16 +98,16 @@ public class UserCoursesController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseStatus.OK.getStatus(), "Delete Success", null));
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseObject> handleNotFoundException(NotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), ex.getMessage(), null));
-
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseObject> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseObject("error", "An error occurred", ex.getMessage()));
-    }
+//    @ExceptionHandler(NotFoundException.class)
+//    public ResponseEntity<ResponseObject> handleNotFoundException(NotFoundException ex) {
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), ex.getMessage(), null));
+//
+//    }
+//
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ResponseObject> handleException(Exception ex) {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseObject("error", "An error occurred", ex.getMessage()));
+//    }
 
 
 }

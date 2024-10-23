@@ -5,11 +5,10 @@ import com.base.entity.Course;
 import com.base.entity.ResponseObject;
 import com.base.exception.ConflictException;
 import com.base.exception.NotFoundException;
-import com.base.utils.ResponseStatus;
 import com.base.service.implement.CoursesService;
+import com.base.utils.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 // url path
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@RequestMapping(path = "/api/v1" + "/courses")
+@RequestMapping(path = "/api/v1/courses")
 public class CoursesController {
 
     private final CoursesService coursesService;
@@ -74,25 +73,25 @@ public class CoursesController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("fail", "Course not found", null));
     }
 
-    @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ResponseObject> handleConflictException(ConflictException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), ex.getMessage(), null));
-    }
+//    @ExceptionHandler(ConflictException.class)
+//    public ResponseEntity<ResponseObject> handleConflictException(ConflictException ex) {
+//        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), ex.getMessage(), null));
+//    }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseObject> handleNotFoundException(NotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), ex.getMessage(), null));
+//    @ExceptionHandler(NotFoundException.class)
+//    public ResponseEntity<ResponseObject> handleNotFoundException(NotFoundException ex) {
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), ex.getMessage(), null));
+//
+//    }
 
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ResponseObject> handleConflictException(DataIntegrityViolationException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Cannot delete course because it is referenced by other entities", null));
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseObject> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseObject("error", "An error occurred", ex.getMessage()));
-    }
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<ResponseObject> handleConflictException(DataIntegrityViolationException ex) {
+//        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseObject(ResponseStatus.FAIL.getStatus(), "Cannot delete course because it is referenced by other entities", null));
+//    }
+//
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ResponseObject> handleException(Exception ex) {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseObject("error", "An error occurred", ex.getMessage()));
+//    }
 
 }

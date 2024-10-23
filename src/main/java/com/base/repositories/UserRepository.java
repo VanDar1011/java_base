@@ -7,7 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer> {
-    @Query("SELECT u FROM users u WHERE u.name LIKE %?1%")
+    @Query("SELECT u  FROM User u WHERE u.name " +
+            "LIKE " +
+            "%?1%")
     List<User> findByName(String name);
+
 
 }

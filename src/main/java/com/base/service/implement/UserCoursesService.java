@@ -33,13 +33,18 @@ public class UserCoursesService implements IUserCoursesService {
         Pageable pageable = PageRequest.of(paginationRequest.getPage(), paginationRequest.getSize());
         Page<UserCourses> userCoursesPage = userCoursesRepository.findAll(pageable);
 
+        System.out.println("User course : " + userCoursesPage.getContent());
+
         // Trả về danh sách các UserCourses từ Page
-        return new PaginatedResponse<>(userCoursesPage.getContent(), userCoursesPage.getTotalElements());
+        return new PaginatedResponse<>(userCoursesPage.getContent(),
+                userCoursesPage.getTotalElements());
     }
 
     @Override
     public List<UserCourses> getCoursesByIdUser(int userId, PaginationRequest paginationRequest) {
         List<UserCourses> list = userCoursesRepository.findByUserId(userId);
+        System.out.println("List : " + list);
+
         return list;
     }
 

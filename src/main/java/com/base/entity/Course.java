@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 
-@Entity(name="courses")
+@Entity
+@Table(name = "courses")
 public class Course implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name="name",nullable = false)
+    @Column(nullable = false)
     private String name;
 
 

@@ -1,63 +1,48 @@
 package com.base.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
-
-@Entity(name = "users")
-public class User implements Serializable {
+import java.util.Set;
+@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@Entity
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(length = 20, nullable = false)
-    private String name;
+    int id;
+    @Column(nullable = false)
+    String name;
+    @Column(nullable = true)
+    String password;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_id")
-    private Profile profile;
+    Profile profile;
+    @Column(name = "roles")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    private Set<String> roles;
 //    @Column(length = 20, nullable = false)
 //    private  String userName;
 
-    public User() {
-    }
 
-    public User(int id, String name, Profile profile) {
-        this.id = id;
+    public User(String name, String password, Profile profile, Set<String> roles) {
         this.name = name;
+        this.password = password;
         this.profile = profile;
+        this.roles = roles;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public User(String name, String password) {
         this.name = name;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", profile=" + profile +
-                '}';
+        this.password = password;
     }
 }

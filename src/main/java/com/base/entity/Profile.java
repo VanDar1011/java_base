@@ -1,14 +1,19 @@
 package com.base.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-@Entity(name = "profile")
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity()
+@Table(name = "profile")
 public class Profile implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "address", length = 50, nullable = false)
+    @Column(length = 50, nullable = false)
     private String address;
 
     public int getId() {
@@ -27,12 +32,12 @@ public class Profile implements Serializable {
         this.address = address;
     }
 
+    public Profile(String address) {
+        this.address = address;
+    }
 
     @Override
     public String toString() {
-        return "Profile{" +
-                "id=" + id +
-                ", address='" + address + 
-                '}';
+        return "Profile{" + "id=" + id + ", address='" + address + '}';
     }
 }

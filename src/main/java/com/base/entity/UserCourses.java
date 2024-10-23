@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 
-@Entity(name = "user_courses")
+
+@Entity()
+@Table(name = "user_courses")
 public class UserCourses implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,28 +33,28 @@ public class UserCourses implements Serializable {
         this.course = course;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public void setId(int id) {
         this.id = id;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public Course getCourse() {
-        return course;
-    }
-
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Course getCourse() {
+        return course;
     }
 
     @Override

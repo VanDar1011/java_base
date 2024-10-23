@@ -20,3 +20,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 server:
   port: 8080
+
+jwt:
+  signerKey : "VwIhn8GsLwCylorej1Wdtijgzrdr6RWy"

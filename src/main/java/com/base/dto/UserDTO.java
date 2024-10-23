@@ -1,46 +1,23 @@
 package com.base.dto;
 
-import java.io.Serializable;
+import com.base.entity.Profile;
+import com.base.entity.User;
+import com.base.enums.Role;
+import lombok.*;
 
+import java.util.Set;
+@Getter
+@Setter
+@AllArgsConstructor
+@Builder
 public class UserDTO {
     private int id;
     private String name;
-    private ProfileDTO profile;
-
-    public UserDTO() {
+    private Set<String> roles;
+    private Profile profile;
+    public UserDTO convertUsertoUserDTO(User user){
+    return new UserDTO(user.getId(), user.getName(), user.getRoles(),user.getProfile());
     }
-
-    public UserDTO(int id, String name, ProfileDTO profile) {
-        this.id = id;
-        this.name = name;
-        this.profile = profile;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ProfileDTO getProfile() {
-        return profile;
-    }
-
-    public void setProfile(ProfileDTO profile) {
-        this.profile = profile;
-    }
-
 
 
 }

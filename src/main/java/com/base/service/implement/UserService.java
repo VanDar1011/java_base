@@ -2,6 +2,7 @@ package com.base.service.implement;
 
 import com.base.dto.PaginatedResponse;
 import com.base.dto.PaginationRequest;
+import com.base.dto.UserDTO;
 import com.base.entity.Profile;
 import com.base.entity.User;
 import com.base.exception.NotFoundException;
@@ -9,14 +10,18 @@ import com.base.repositories.ProfileRepostitory;
 import com.base.repositories.UserRepository;
 import com.base.service.i.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService implements IUserService {
@@ -26,14 +31,20 @@ public class UserService implements IUserService {
 
     private final ProfileRepostitory profileRepository;
 
+    @PostAuthorize("hasRole('ADMIN')")
     @Override
-    public PaginatedResponse<User> getAll(PaginationRequest paginationRequest) {
+    public PaginatedResponse<UserDTO> getAll(PaginationRequest paginationRequest) {
+       log.info("In method getAll");
         Pageable pageable =
                 PageRequest.of(paginationRequest.getPage(), paginationRequest.getSize());
         Page<User> userPage = userRepository.findAll(pageable);
+        Page<UserDTO> userDTOS = userPage.map(user -> UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .build());
 
         // Trả về danh sách các UserCourses từ Page
-        return new PaginatedResponse<>(userPage.getContent(), userPage.getTotalElements());
+        return new PaginatedResponse<>(userDTOS.getContent(), userDTOS.getTotalElements());
     }
 
     @Override
@@ -41,6 +52,7 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
+//    @PostAuthorize("hasRole('ADMIN')")
     @Override
     public User getUserById(int id) {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not" +
@@ -51,7 +63,7 @@ public class UserService implements IUserService {
     public List<User> getUserByName(String name) {
         return userRepository.findByName(name);
     }
-
+    @PostAuthorize("returnObject.name == authentication.name")
     @Override
     public User updateUser(int id, User userDetails) {
         User existingUser = userRepository.findById(id)
@@ -80,6 +92,17 @@ public class UserService implements IUserService {
         } else {
             return false; // Không tìm thấy người dùng
         }
+    }
+
+    @Override
+    public User getMyInfor() {
+       var context = SecurityContextHolder.getContext();
+       String name = context.getAuthentication().getName();
+      List<User> users =   userRepository.findByName(name);
+      if(users.isEmpty()) {
+          throw new NotFoundException("User with name " + name + " not found");
+      }
+      return users.get(0);
     }
 
 
